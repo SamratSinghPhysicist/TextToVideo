@@ -1,14 +1,11 @@
 import requests
 from googleapiclient.discovery import build
 
-from script_generator import script_generator
 import re
-from DuckDuckGo_API import generateDDG_ai_chat
 
+# from DuckDuckGo_API import generateDDG_ai_chat
+from script_generator import generate_gemini
 
-# Replace these with your own API key and CSE ID
-CSE_API_KEY = 'AIzaSyAHK4qMoAWDk283bx89ho4l3Eq1v8D09m4'
-CSE_ID = 'c2f46cbbd07374a55'
 
 
 def split_script_into_scenes(script):
@@ -18,12 +15,15 @@ def split_script_into_scenes(script):
     """
     # The regex pattern '\n\s*\n' matches a newline, any whitespace (if any), and another newline.
     scenes_list = re.split(r'\n\s*\n', script.strip())
+    print (scenes_list)
     return scenes_list
 
-def image_search_query_for_only_a_single_scene(scene):
+def image_search_query_for_only_a_single_scene(scene, api_key_gemini):
     
-    promt = f"Write 2-3 relevant keywords (in a single line) for google image search to get relevant images as per this scene lines: {scene}. Note that you just have to write the keywords, nothing else. I just want the text as I will directly use it through a code to get images. Don't give any instructions, or directions, or tell what you are writing. Just give me the one line keywords."
-    search_query = generateDDG_ai_chat(promt, "gpt-4o-mini")
+    prompt = f"Write 2-3 relevant keywords (in a single line) for google image search to get relevant images as per this scene lines: {scene}. Note that you just have to write the keywords, nothing else. I just want the text as I will directly use it through a code to get images. Don't give any instructions, or directions, or tell what you are writing. Just give me the one line keywords."
+    # search_query = generateDDG_ai_chat(promt, "gpt-4o-mini")
+
+    search_query = generate_gemini(prompt, api_key_gemini)
 
     return search_query
 
@@ -34,21 +34,25 @@ def google_image_search(CSE_API_KEY, CSE_ID, query):
     """
     service = build("customsearch", "v1", developerKey=CSE_API_KEY)
     
+    try: 
+
     # Perform the search with searchType set to "image"
-    res = service.cse().list(
-        q=query,
-        cx=CSE_ID,
-        searchType="image",
-        num=1  # Only need the top image result
-    ).execute()
-    
-    # Check if any items were returned
-    if 'items' in res:
-        # Return the first result
-        return res['items'][0]
-    else:
-        print("No image results found for query:", query)
-        return None
+        res = service.cse().list(
+            q=query,
+            cx=CSE_ID,
+            searchType="image",
+            num=1  # Only need the top image result
+        ).execute()
+
+        # Check if any items were returned
+        if 'items' in res:
+            # Return the first result
+            return res['items'][0]
+        else:
+            print("No image results found for query:", query)
+            return None
+    except Exception as e:
+        print(f"Error in search images: {e}")
 
 def download_image(image_url, filename):
     """
@@ -61,12 +65,14 @@ def download_image(image_url, filename):
             for chunk in response.iter_content(1024):
                 f.write(chunk)
         print(f"Image successfully downloaded: {filename}")
+        return True
     except Exception as e:
         print("Error downloading image:", e)
+        return False
 
 
 
-def main_image_function(script, testMode):
+def main_image_function(script, testMode, api_key_gemini, CSE_API_KEY, CSE_ID):
     #Different Scenes into a list
     scenes_list = split_script_into_scenes(script)
 
@@ -75,8 +81,8 @@ def main_image_function(script, testMode):
     if testMode == False:
         #Search Query, Link, and Download for each image
 
-        for i in len(scenes_list):
-            search_query = image_search_query_for_only_a_single_scene(scenes_list[i])
+        for i in range(0, len(scenes_list)):
+            search_query = image_search_query_for_only_a_single_scene(scenes_list[i], api_key_gemini)
 
             result = google_image_search(CSE_API_KEY, CSE_ID, search_query)
 
@@ -87,22 +93,34 @@ def main_image_function(script, testMode):
 
                 #Download the image and save it
                 image_name_to_be_saved_as = search_query.replace(' ', '_')
-                download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
+                image_name_to_be_saved_as = image_name_to_be_saved_as.replace('\n', '')
+                is_image_donwloaded = download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
+                if is_image_donwloaded == True:
+                    image_name_with_scene.update({f"scene{i+1}": f"{image_name_to_be_saved_as}.jpg"})
+                else:
+                    print(f"Failed to download image for scene {i+1}")
+                    print(f"Using placeholder.jpg for scene{i+1}")
+                    image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
 
-                image_name_with_scene.update({f"scene{i+1}": f"{image_name_to_be_saved_as}.jpg"})
+                    print (image_name_with_scene)
+                    return image_name_with_scene    
             else:
-                print("No image was found")
-        return image_name_with_scene
+                print(f"No image was found for scene{i+1}, or there was an error")
+                print(f"Using placeholder.jpg for scene{i+1}")
+                image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
+        
     else:
         print("Test Mode is ON")
         print("Skipping the image search and download process, and using placeholder images")
         print("To Turn off the Test Mode, change the testMode variable to False in main_image_function() function")
 
-        for i in len(scenes_list):
+        for i in range (1, len(scenes_list)+1):
             image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
 
         return image_name_with_scene
         
+# main_image_function(generate_gemini("2 Facts about unicorn", 'AIzaSyBT9nNewIYud_hrVlBI_9lqqqa58REqw2Y'), False, 'AIzaSyBT9nNewIYud_hrVlBI_9lqqqa58REqw2Y', 'AIzaSyAHK4qMoAWDk283bx89ho4l3Eq1v8D09m4','c2f46cbbd07374a55')
+
 
 """
 if __name__ == '__main__':

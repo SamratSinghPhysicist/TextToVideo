@@ -1,25 +1,15 @@
 import requests
-from pydub import AudioSegment
-from pydub.playback import play
 
-#Importing a fucntion from the file ./script_generator.py
-from script_generator import script_generator
-
-# Replace with your actual ElevenLabs API key
-ELEVENLABS_API_KEY = "sk_6718bab9e714d9eee4cbd6bce21f3d5140ed2faed553a96d"
-
-# Select a realistic male voice; change the voice ID if needed
-VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Example voice ID
-
-def text_to_speech(script, testMode, output_file="output_speech.mp3"):
+def text_to_speech(script, testMode, api_key_elevenlabs, voice_id, output_file="output_speech.mp3"):
+    is_speech_generated = False
     if testMode == False:
         """
         Sends text to ElevenLabs API to generate speech and saves it as an MP3 file.
         """
-        url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
         headers = {
             "Content-Type": "application/json",
-            "xi-api-key": ELEVENLABS_API_KEY
+            "xi-api-key": api_key_elevenlabs
         }
         data = {
             "text": script,
@@ -37,12 +27,20 @@ def text_to_speech(script, testMode, output_file="output_speech.mp3"):
             with open(output_file, "wb") as f:
                 f.write(response.content)
             print("Speech generated successfully and saved to:", output_file)
+            is_speech_generated = True
+
+            return is_speech_generated
         else:
             print("Error generating speech:")
             print(response.json())
+
+            is_speech_generated = False
+            return is_speech_generated
         
     else:
         print("This is Test mode. The speech for the script is generated here is only for testing. To generate the actual speech, please set testMode to False. The test speech is: test_voiceover.mp3")
+
+        is_speech_generated = False
 
 
 
