@@ -1,8 +1,5 @@
 from duckduckgo_search import DDGS
 
-
-
-
 def generateDDG_ai_chat(promt, model_to_use):
     
     """

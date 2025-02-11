@@ -66,30 +66,42 @@ def download_image(image_url, filename):
 
 
 
-def main_image_function(script):
+def main_image_function(script, testMode):
     #Different Scenes into a list
     scenes_list = split_script_into_scenes(script)
 
     image_name_with_scene = {}
 
-    #Search Query, Link, and Download for each image
-    for i in scenes_list:
-        search_query = image_search_query_for_only_a_single_scene(i)
+    if testMode == False:
+        #Search Query, Link, and Download for each image
 
-        result = google_image_search(CSE_API_KEY, CSE_ID, search_query)
+        for i in len(scenes_list):
+            search_query = image_search_query_for_only_a_single_scene(scenes_list[i])
 
-        if result:
-            #Get link of image
-            image_url = result.get('link')
-            print(f"Top image URL for {search_query} is: {image_url}")
+            result = google_image_search(CSE_API_KEY, CSE_ID, search_query)
 
-            #Download the image and save it
-            image_name_to_be_saved_as = search_query.replace(' ', '_')
-            download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
-        else:
-            print("No image was found")
+            if result:
+                #Get link of image
+                image_url = result.get('link')
+                print(f"Top image URL for {search_query} is: {image_url}")
 
-    return image_name_with_scene
+                #Download the image and save it
+                image_name_to_be_saved_as = search_query.replace(' ', '_')
+                download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
+
+                image_name_with_scene.update({f"scene{i+1}": f"{image_name_to_be_saved_as}.jpg"})
+            else:
+                print("No image was found")
+        return image_name_with_scene
+    else:
+        print("Test Mode is ON")
+        print("Skipping the image search and download process, and using placeholder images")
+        print("To Turn off the Test Mode, change the testMode variable to False in main_image_function() function")
+
+        for i in len(scenes_list):
+            image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
+
+        return image_name_with_scene
         
 
 """
