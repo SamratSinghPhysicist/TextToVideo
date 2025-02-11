@@ -65,10 +65,12 @@ def download_image(image_url, filename):
         print("Error downloading image:", e)
 
 
-"""
-def main(script):
+
+def main_image_function(script):
     #Different Scenes into a list
     scenes_list = split_script_into_scenes(script)
+
+    image_name_with_scene = {}
 
     #Search Query, Link, and Download for each image
     for i in scenes_list:
@@ -86,13 +88,15 @@ def main(script):
             download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
         else:
             print("No image was found")
+
+    return image_name_with_scene
         
 
-
+"""
 if __name__ == '__main__':
     title = input("Enter the title of Video: ")
     script = script_generator(title)  #But, Don't use it here, use it directly in main video maker file, to avoid different scripts
-    main(script)
+    main_image_function(script)
 """
 
 

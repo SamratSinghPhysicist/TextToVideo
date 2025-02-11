@@ -11,7 +11,7 @@ ELEVENLABS_API_KEY = "sk_6718bab9e714d9eee4cbd6bce21f3d5140ed2faed553a96d"
 # Select a realistic male voice; change the voice ID if needed
 VOICE_ID = "pNInz6obpgDQGcFmaJgB"  # Example voice ID
 
-def text_to_speech(script, output_file="output.mp3"):
+def text_to_speech(script, output_file="output_speech.mp3"):
     """
     Sends text to ElevenLabs API to generate speech and saves it as an MP3 file.
     """
