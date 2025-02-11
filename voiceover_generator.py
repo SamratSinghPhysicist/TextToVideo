@@ -40,17 +40,6 @@ def text_to_speech(script, output_file="output.mp3"):
         print("Error generating speech:")
         print(response.json())
 
-def play_audio(file_path):
-    """
-    Plays an audio file using pydub.
-    """
-    try:
-        print("Playing audio...")
-        # Load the audio file (specify the format if necessary)
-        sound = AudioSegment.from_file(file_path, format="mp3")
-        play(sound)
-    except Exception as e:
-        print("Error playing audio:", e)
 
 
 
@@ -63,7 +52,6 @@ def main(script):
     
     # Generate speech and then play it
     text_to_speech(script, output_file)
-    play_audio(output_file)
 
 if __name__ == "__main__":
     main()
