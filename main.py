@@ -125,5 +125,5 @@ def main(title, testMode):
 
 if __name__ == '__main__':
     title = "3 Facts about unicorn"
-    testMode = False
+    testMode = True
     main(title, testMode)
