@@ -39,19 +39,21 @@ def text_to_speech(script, testMode, api_key_elevenlabs, voice_id, output_file="
                 
             print("Speech generated successfully and saved to:", output_path)
             is_speech_generated = True
-            return is_speech_generated
+            return [is_speech_generated, output_path]
         else:
             print("Error generating speech:")
             print(response.json())
             is_speech_generated = False
-            return is_speech_generated
+            output_path = "Failed to generate speech"
+            return [is_speech_generated, output_path]
 
     else:
         print("This is Test mode. The speech for the script is generated here is only for testing. "
               "To generate the actual speech, please set testMode to False. "
-              "The test speech is: /test_assets/test_voiceover.mp3")
-        is_speech_generated = False
-        return is_speech_generated
+              "The test speech is at: test_assets/test_voiceover.mp3")
+        is_speech_generated = True
+        output_path = "test_assets/test_voiceover.mp3"
+        return [is_speech_generated, output_path]
 
 
 """

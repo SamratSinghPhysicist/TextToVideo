@@ -17,7 +17,7 @@ def script_generator(title, testMode, api_key_gemini):
     try:
 
         if testMode == False:
-            prompt = "Create a script for a YouTube Shorts video that is between 30 seconds and 1 minute long. The script should be in hinglish (hindi + english both mixed).  I will be using this script in a text-to-video app, so the output should be *only* the text to be spoken.  Do not include any scene descriptions, camera directions, emotional cues, or suggestions of any kind.  Use line breaks (paragraph breaks) to indicate where I should make a visual change in my video.  The script should be concise and engaging for a short-form video format.  I want the script to be ready to be directly inputted into a text-to-video application, So don't say anything like 'Okay, here's your script, ready for text-to-video:' . The video will be about " + title + "."
+            prompt = f"Create a script for a YouTube Shorts video that lasts between 30 seconds and 1 minute. The script should be written in Hinglish (a mix of Hindi and English) and must be divided into multiple scenes. Use a blank line (i.e. two newline characters) to separate each scene. Only include the text that will be spoken in the video—do not include any camera directions, scene descriptions, or emotional cues. Don't say anything like Here is your generated script, or don't give any scene descriptions like this is Scene 1, that is scene 2, etc. The script should be concise, engaging, and ready to be directly used in a text-to-video application. The video will be about {title}."
             script = generate_gemini(prompt, api_key_gemini)
             is_script_generated = True
         else:

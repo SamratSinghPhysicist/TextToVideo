@@ -184,6 +184,9 @@ def generate_final_video(script, images_mapping, audio_path,
     # Write the final video to file
     final_clip.write_videofile(output_filename, fps=24, codec="libx264")
 
+
+
+"""
 if __name__ == "__main__":
     # --------------------------------------------------------------------------
     # Example usage:
@@ -212,3 +215,5 @@ if __name__ == "__main__":
     # Generate and export the final video
     generate_final_video(script, images_mapping, audio_path,
                          output_filename="final_video.mp4", transition_duration=1)
+
+"""

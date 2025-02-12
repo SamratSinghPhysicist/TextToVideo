@@ -1,14 +1,25 @@
 #Final Video Generator
-
-from moviepy import *
-
 from script_generator import script_generator
 from voiceover_generator import text_to_speech
 from image_generator import main_image_function
+from video_generator import generate_final_video
 
 
 import os
 from dotenv import load_dotenv
+
+import asyncio
+
+"""
+# TO MAKE A CODE WAIT
+async def main():
+    print("Start")
+    await asyncio.sleep(5)  # Wait for 5 seconds
+    print("End")
+
+# Run the async function
+asyncio.run(main())
+"""
 
 #Loading API keys from .env file
 load_dotenv()
@@ -18,8 +29,6 @@ GEMINI_API_KEY_1 = os.getenv("GEMINI_API_KEY_1")
 ELEVENLABS_API_KEY_1 = os.getenv("ELEVENLABS_API_KEY_1")
 VOICE_ID_1 = os.getenv("VOICE_ID_1")
 
-CSE_API_KEY_1 = os.getenv("CSE_API_KEY_1")
-CSE_ID_1 = os.getenv("CSE_ID_1")
 
 #API keys for account_2=samrat1212study2@gmail.com
 GEMINI_API_KEY_2 = os.getenv("GEMINI_API_KEY_2")
@@ -27,8 +36,6 @@ GEMINI_API_KEY_2 = os.getenv("GEMINI_API_KEY_2")
 ELEVENLABS_API_KEY_2 = os.getenv("ELEVENLABS_API_KEY_2")
 VOICE_ID_2 = os.getenv("VOICE_ID_2")
 
-CSE_API_KEY_2 = os.getenv("CSE_API_KEY_2")
-CSE_ID_2 = os.getenv("CSE_ID_2")
 
 #API keys for account_3=sam1212factz@gmail.com
 GEMINI_API_KEY_3 = os.getenv("GEMINI_API_KEY_3")
@@ -36,14 +43,16 @@ GEMINI_API_KEY_3 = os.getenv("GEMINI_API_KEY_3")
 ELEVENLABS_API_KEY_3 = os.getenv("ELEVENLABS_API_KEY_3")
 VOICE_ID_3 = os.getenv("VOICE_ID_3")
 
-CSE_API_KEY_3 = os.getenv("CSE_API_KEY_3")
-CSE_ID_3 = os.getenv("CSE_ID_3")
+
+IMAGEPIG_API_KEY = os.getenv("IMAGEPIG_API_KEY")
+
+
 
 #API Keys for different accounts
 api_key = {
-    'account_1': [GEMINI_API_KEY_1, ELEVENLABS_API_KEY_1, VOICE_ID_1, CSE_API_KEY_1, CSE_ID_1],
-    'account_2': [GEMINI_API_KEY_2, ELEVENLABS_API_KEY_2, VOICE_ID_2, CSE_API_KEY_2, CSE_ID_2],
-    'account_3': [GEMINI_API_KEY_3, ELEVENLABS_API_KEY_3, VOICE_ID_3, CSE_API_KEY_3, CSE_ID_3],
+    'account_1': [GEMINI_API_KEY_1, ELEVENLABS_API_KEY_1, VOICE_ID_1, IMAGEPIG_API_KEY],
+    'account_2': [GEMINI_API_KEY_2, ELEVENLABS_API_KEY_2, VOICE_ID_2, IMAGEPIG_API_KEY],
+    'account_3': [GEMINI_API_KEY_3, ELEVENLABS_API_KEY_3, VOICE_ID_3, IMAGEPIG_API_KEY],
 }
 
 
@@ -70,12 +79,15 @@ def script_receiver(title, testMode):
 def speech_receiver(script, testMode):
     try:
         for i in range(1, len(api_key) + 1):
-            is_speech_generated = text_to_speech(script, testMode, api_key[f'account_{i}'][1], api_key[f'account_{i}'][2])
+            speech_generated_details = text_to_speech(script, testMode, api_key[f'account_{i}'][1], api_key[f'account_{i}'][2])
+            is_speech_generated = speech_generated_details[0]
+            speech_path = speech_generated_details[1]
 
             if is_speech_generated == True:
-                return [True, i]
+                return [True, i, speech_path]
             else:
-                print(f"account_{i} Failed to generate Voiceove")
+                print(f"account_{i} Failed to generate Voiceover")
+                continue
         return [False, "VoiceOver NOT Generated, Error"]
     except Exception as e:
         print(f"Error in generating Voiceover: {e}")
@@ -83,10 +95,10 @@ def speech_receiver(script, testMode):
 def images_receiver(script, testMode):
     try:
         for i in range (1, len(api_key)+1):
-            images_name_with_scene = main_image_function(script, testMode, api_key[f'account_{i}'][0], api_key[f'account_{i}'][3], api_key[f'account_{i}'][4])
+            images_name_with_scene = asyncio.run(main_image_function(script, testMode, api_key[f'account_{i}'][0], api_key[f'account_{i}'][3]))
 
             if images_name_with_scene:
-                return [images_name_with_scene, i]
+                return images_name_with_scene
             else:
                 print(f"Failed to get images with account_{i}")
                 continue
@@ -109,21 +121,24 @@ def main(title, testMode):
     voiceover_info = speech_receiver(script, testMode)
     is_voiceover_generated = voiceover_info[0]
     voiceover_account = voiceover_info[1]
+    audio_path = voiceover_info[2]
     if is_voiceover_generated == True:
         print(f"account_{voiceover_account} generated voiceover Successfully")
+        print(f"Path of voiceover file: {audio_path}")
     else:
         print("Failed to generate voiceover with every account")
 
     # Generate Images
-    images_info = images_receiver(script, testMode)
-    images_name_with_scene = images_info[0]
-    image_account = images_info[1]
+    images_mapping = images_receiver(script, testMode)
+    print("Images mapping is as follows:")
+    print(images_mapping)
 
-    print(f"Images generated with account_{image_account}.\n Here are the images name for each scene:\n {images_name_with_scene}")
+    #Generate Video
+    generate_final_video(script, images_mapping, audio_path, output_filename="final_video.mp4", transition_duration=1)
 
 
 
 if __name__ == '__main__':
-    title = "3 Facts about unicorn"
-    testMode = True
+    title = "3 Facts about astronauts"
+    testMode = False
     main(title, testMode)

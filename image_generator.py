@@ -1,9 +1,9 @@
 import requests
-from googleapiclient.discovery import build
-import os
 import re
+from base64 import b64decode
+from pathlib import Path
+import asyncio
 
-# from DuckDuckGo_API import generateDDG_ai_chat
 from script_generator import generate_gemini
 
 
@@ -18,128 +18,111 @@ def split_script_into_scenes(script):
     print (scenes_list)
     return scenes_list
 
-def image_search_query_for_only_a_single_scene(scene, api_key_gemini):
+def image_generate_prompt_imagepig(scene, api_key_gemini):
+    prompt = f"""I have a scene description. Please convert this into a detailed and vivid image-generation prompt suitable for an AI art generator. Make sure to include key visual elements such as the setting, mood, characters, lighting, and any distinctive features that capture the essence of the scene. The prompt should be concise yet descriptive enough to generate a faithful illustration. Also, just give the prompt and don't say anything else as I would directly use this in text to image converter, So, just give the prompt and say nothing else. The scene is below: {scene}"""
     
-    prompt = f"Write 2-3 relevant keywords (in a single line) for google image search to get relevant images as per this scene lines: {scene}. Note that you just have to write the keywords, nothing else. I just want the text as I will directly use it through a code to get images. Don't give any instructions, or directions, or tell what you are writing. Just give me the one line keywords."
-    # search_query = generateDDG_ai_chat(promt, "gpt-4o-mini")
+    image_generate_prompt = generate_gemini(prompt, api_key_gemini)
 
-    search_query = generate_gemini(prompt, api_key_gemini)
+    image_generate_prompt = image_generate_prompt.replace('\\', ' ')
+    image_generate_prompt = image_generate_prompt.replace('\n', ' ')
 
-    return search_query
+    return image_generate_prompt
 
+def generate_imagepig_ai(prompt, testMode, IMAGEPIG_API_KEY):
 
-def google_image_search(CSE_API_KEY, CSE_ID, query):
-    """
-    Searches for images using Google's Custom Search API and returns the top result.
-    """
-    service = build("customsearch", "v1", developerKey=CSE_API_KEY)
+    if testMode == False:
+        r = requests.post(
+            "https://api.imagepig.com/flux",
+            headers={"Api-Key": IMAGEPIG_API_KEY},
+            json={"prompt": prompt},
+        )
+
+        if r.ok:
+            # Define the subfolder and filename
+            subfolder = Path("video_assets")
+            # Create the subfolder if it doesn't exist
+            subfolder.mkdir(parents=True, exist_ok=True)
+
+            prompt = prompt.replace(' ', '_')
+            prompt = prompt.replace(',', '_')
+            prompt = prompt.replace('/', '_')
+            prompt = prompt.replace('\\', '_')
+            prompt = prompt.replace('!', '_')
+            prompt = prompt.replace('\n', '_')
+            prompt = prompt.replace('.', '_')
+            prompt = prompt.replace(';', '_')
+            prompt = prompt.replace('?', '_')
+            prompt = prompt.replace(':', '_')
+            prompt = prompt.replace('\'', '_')
+            prompt = prompt.replace('"', '_')
+            prompt = prompt.replace('`', '_')
+            prompt = prompt.replace('~', '_')
+            prompt = prompt.replace('@', '_')
+            prompt = prompt.replace('#', '_')
+            prompt = prompt.replace('$', '_')
+            prompt = prompt.replace('%', '_')
+            prompt = prompt.replace('^', '_')
+            prompt = prompt.replace('&', '_')
+            prompt = prompt.replace('*', '_')
+            prompt = prompt.replace('=', '_')
+            prompt = prompt.replace('>', '_')
+            prompt = prompt.replace('<', '_')
+            # Define the full file path where the image will be saved
+            filepath = f"video_assets/{prompt}.jpg"
+            safe_filepath = f"{filepath[:20]}.jpg"
+
+            # Save the image to the specified path
+            with open(safe_filepath, "wb") as f:
+                f.write(b64decode(r.json()["image_data"]))
     
-    try: 
-
-    # Perform the search with searchType set to "image"
-        res = service.cse().list(
-            q=query,
-            cx=CSE_ID,
-            searchType="image",
-            num=1  # Only need the top image result
-        ).execute()
-
-        # Check if any items were returned
-        if 'items' in res:
-            # Return the first result
-            return res['items'][0]
+            print("Image download successful")
+            image_path = safe_filepath
+            return image_path
         else:
-            print("No image results found for query:", query)
-            return None
-    except Exception as e:
-        print(f"Error in search images: {e}")
+            r.raise_for_status()
+            return "Failed to download the image"
 
-def download_image(image_url, filename):
-    """
-    Downloads an image from a URL and saves it to a file in the 'video_assets' subfolder.
-    """
-    # Define the target directory
-    target_dir = 'video_assets'
-    
-    # Create the directory if it doesn't exist
-    os.makedirs(target_dir, exist_ok=True)
-    
-    # Build the full file path
-    filepath = os.path.join(target_dir, filename)
-    
-    try:
-        response = requests.get(image_url, stream=True)
-        response.raise_for_status()  # Raise an error on bad status
-        
-        with open(filepath, 'wb') as f:
-            for chunk in response.iter_content(1024):
-                f.write(chunk)
-                
-        print(f"Image successfully downloaded: {filepath}")
-        return True
-    except Exception as e:
-        print("Error downloading image:", e)
-        return False
+    else:
+        print("Test Mode is ON. placeholder images will be used")
+        print("Path of placeholder.jpg: /video_assets/placeholder.jpg")
+        image_path = "test_assets/placeholder.jpg"
+        return image_path
 
 
 
-def main_image_function(script, testMode, api_key_gemini, CSE_API_KEY, CSE_ID):
+async def main_image_function(script, testMode, api_key_gemini, IMAGEPIG_API_KEY):
     #Different Scenes into a list
     scenes_list = split_script_into_scenes(script)
 
     image_name_with_scene = {}
 
     if testMode == False:
-        #Search Query, Link, and Download for each image
+        try:
+            for i in range(0, len(scenes_list)):
+                image_generate_prompt_imagepig_ai = image_generate_prompt_imagepig(scenes_list[i], api_key_gemini)
+                imagepig_image_path = generate_imagepig_ai(image_generate_prompt_imagepig_ai, testMode, IMAGEPIG_API_KEY)
+                image_name_with_scene.update({f"scene{i+1}": f"{imagepig_image_path}"})
 
-        for i in range(0, len(scenes_list)):
-            search_query = image_search_query_for_only_a_single_scene(scenes_list[i], api_key_gemini)
+                print("Waiting for next 121 seconds due to API limits of ImagePig")
+                await asyncio.sleep(121)  # Wait 121 seconds before generating other image (as were using Flux ImagePig Generator free tier)
+                print("Wait over for image pig, continuing ....")
 
-            result = google_image_search(CSE_API_KEY, CSE_ID, search_query)
+            return image_name_with_scene
+        except Exception as e:
+            print("Error in generating Image: ", e)
 
-            if result:
-                #Get link of image
-                image_url = result.get('link')
-                print(f"Top image URL for {search_query} is: {image_url}")
-
-                #Download the image and save it
-                image_name_to_be_saved_as = search_query.replace(' ', '_')
-                image_name_to_be_saved_as = image_name_to_be_saved_as.replace('\n', '')
-                image_name_to_be_saved_as = image_name_to_be_saved_as.replace(',', '_')
-                is_image_donwloaded = download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
-                if is_image_donwloaded == True:
-                    image_name_with_scene.update({f"scene{i+1}": f"/video_assets/{image_name_to_be_saved_as}.jpg"})
-                else:
-                    print(f"Failed to download image for scene {i+1}")
-                    print(f"Using placeholder.jpg for scene{i+1}")
-                    image_name_with_scene.update({f"scene{i+1}": "/video_assets/placeholder.jpg"})
-
-                    print (image_name_with_scene)
-                    return image_name_with_scene    
-            else:
-                print(f"No image was found for scene{i+1}, or there was an error")
-                print(f"Using placeholder.jpg for scene{i+1}")
-                image_name_with_scene.update({f"scene{i+1}": "/video_assets/placeholder.jpg"})
-        
     else:
         print("Test Mode is ON")
         print("Skipping the image search and download process, and using placeholder images")
         print("To Turn off the Test Mode, change the testMode variable to False in main_image_function() function")
 
         for i in range (1, len(scenes_list)+1):
-            image_name_with_scene.update({f"scene{i+1}": "/test_assets/placeholder.jpg"})
+            image_name_with_scene.update({f"scene{i}": "test_assets/placeholder.jpg"})
 
         return image_name_with_scene
+
+
         
-# main_image_function(generate_gemini("2 Facts about unicorn", 'AIzaSyBT9nNewIYud_hrVlBI_9lqqqa58REqw2Y'), False, 'AIzaSyBT9nNewIYud_hrVlBI_9lqqqa58REqw2Y', 'AIzaSyAHK4qMoAWDk283bx89ho4l3Eq1v8D09m4','c2f46cbbd07374a55')
-
-
-"""
-if __name__ == '__main__':
-    title = input("Enter the title of Video: ")
-    script = script_generator(title)  #But, Don't use it here, use it directly in main video maker file, to avoid different scripts
-    main_image_function(script)
-"""
 
 
 
