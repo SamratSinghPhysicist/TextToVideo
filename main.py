@@ -122,9 +122,8 @@ def main(title, testMode):
     print(f"Images generated with account_{image_account}.\n Here are the images name for each scene:\n {images_name_with_scene}")
 
 
-"""
+
 if __name__ == '__main__':
     title = "3 Facts about unicorn"
-    testMode = True
+    testMode = False
     main(title, testMode)
-"""

@@ -1,6 +1,6 @@
 import requests
 from googleapiclient.discovery import build
-
+import os
 import re
 
 # from DuckDuckGo_API import generateDDG_ai_chat
@@ -56,15 +56,26 @@ def google_image_search(CSE_API_KEY, CSE_ID, query):
 
 def download_image(image_url, filename):
     """
-    Downloads an image from a URL and saves it to a file.
+    Downloads an image from a URL and saves it to a file in the 'video_assets' subfolder.
     """
+    # Define the target directory
+    target_dir = 'video_assets'
+    
+    # Create the directory if it doesn't exist
+    os.makedirs(target_dir, exist_ok=True)
+    
+    # Build the full file path
+    filepath = os.path.join(target_dir, filename)
+    
     try:
         response = requests.get(image_url, stream=True)
         response.raise_for_status()  # Raise an error on bad status
-        with open(filename, 'wb') as f:
+        
+        with open(filepath, 'wb') as f:
             for chunk in response.iter_content(1024):
                 f.write(chunk)
-        print(f"Image successfully downloaded: {filename}")
+                
+        print(f"Image successfully downloaded: {filepath}")
         return True
     except Exception as e:
         print("Error downloading image:", e)
@@ -94,20 +105,21 @@ def main_image_function(script, testMode, api_key_gemini, CSE_API_KEY, CSE_ID):
                 #Download the image and save it
                 image_name_to_be_saved_as = search_query.replace(' ', '_')
                 image_name_to_be_saved_as = image_name_to_be_saved_as.replace('\n', '')
+                image_name_to_be_saved_as = image_name_to_be_saved_as.replace(',', '_')
                 is_image_donwloaded = download_image(image_url, f"{image_name_to_be_saved_as}.jpg")
                 if is_image_donwloaded == True:
-                    image_name_with_scene.update({f"scene{i+1}": f"{image_name_to_be_saved_as}.jpg"})
+                    image_name_with_scene.update({f"scene{i+1}": f"/video_assets/{image_name_to_be_saved_as}.jpg"})
                 else:
                     print(f"Failed to download image for scene {i+1}")
                     print(f"Using placeholder.jpg for scene{i+1}")
-                    image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
+                    image_name_with_scene.update({f"scene{i+1}": "/video_assets/placeholder.jpg"})
 
                     print (image_name_with_scene)
                     return image_name_with_scene    
             else:
                 print(f"No image was found for scene{i+1}, or there was an error")
                 print(f"Using placeholder.jpg for scene{i+1}")
-                image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
+                image_name_with_scene.update({f"scene{i+1}": "/video_assets/placeholder.jpg"})
         
     else:
         print("Test Mode is ON")
@@ -115,7 +127,7 @@ def main_image_function(script, testMode, api_key_gemini, CSE_API_KEY, CSE_ID):
         print("To Turn off the Test Mode, change the testMode variable to False in main_image_function() function")
 
         for i in range (1, len(scenes_list)+1):
-            image_name_with_scene.update({f"scene{i+1}": "placeholder.jpg"})
+            image_name_with_scene.update({f"scene{i+1}": "/test_assets/placeholder.jpg"})
 
         return image_name_with_scene
         

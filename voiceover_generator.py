@@ -1,8 +1,12 @@
 import requests
+import os
+
+import os
+import requests
 
 def text_to_speech(script, testMode, api_key_elevenlabs, voice_id, output_file="output_speech.mp3"):
     is_speech_generated = False
-    if testMode == False:
+    if not testMode:
         """
         Sends text to ElevenLabs API to generate speech and saves it as an MP3 file.
         """
@@ -24,24 +28,30 @@ def text_to_speech(script, testMode, api_key_elevenlabs, voice_id, output_file="
         response = requests.post(url, headers=headers, json=data)
 
         if response.status_code == 200:
-            with open(output_file, "wb") as f:
+            # Ensure the target directory exists
+            target_dir = "video_assets"
+            os.makedirs(target_dir, exist_ok=True)
+            # Construct the full file path within the 'video_assets' directory
+            output_path = os.path.join(target_dir, output_file)
+            
+            with open(output_path, "wb") as f:
                 f.write(response.content)
-            print("Speech generated successfully and saved to:", output_file)
+                
+            print("Speech generated successfully and saved to:", output_path)
             is_speech_generated = True
-
             return is_speech_generated
         else:
             print("Error generating speech:")
             print(response.json())
-
             is_speech_generated = False
             return is_speech_generated
-        
+
     else:
-        print("This is Test mode. The speech for the script is generated here is only for testing. To generate the actual speech, please set testMode to False. The test speech is: test_voiceover.mp3")
-
+        print("This is Test mode. The speech for the script is generated here is only for testing. "
+              "To generate the actual speech, please set testMode to False. "
+              "The test speech is: /test_assets/test_voiceover.mp3")
         is_speech_generated = False
-
+        return is_speech_generated
 
 
 """
