@@ -47,12 +47,20 @@ VOICE_ID_3 = os.getenv("VOICE_ID_3")
 IMAGEPIG_API_KEY = os.getenv("IMAGEPIG_API_KEY")
 
 
+#API keys for account_4=samrat1212study@gmail.com
+GEMINI_API_KEY_4 = "NOT MADE YET"
+
+ELEVENLABS_API_KEY_4 = os.getenv("ELEVENLABS_API_KEY_4")
+VOICE_ID_4 = os.getenv("VOICE_ID_4")
+
+
 
 #API Keys for different accounts
 api_key = {
     'account_1': [GEMINI_API_KEY_1, ELEVENLABS_API_KEY_1, VOICE_ID_1, IMAGEPIG_API_KEY],
     'account_2': [GEMINI_API_KEY_2, ELEVENLABS_API_KEY_2, VOICE_ID_2, IMAGEPIG_API_KEY],
     'account_3': [GEMINI_API_KEY_3, ELEVENLABS_API_KEY_3, VOICE_ID_3, IMAGEPIG_API_KEY],
+    'account_4': [GEMINI_API_KEY_4, ELEVENLABS_API_KEY_4, VOICE_ID_4, IMAGEPIG_API_KEY]
 }
 
 
@@ -139,6 +147,6 @@ def main(title, testMode):
 
 
 if __name__ == '__main__':
-    title = "3 Facts about astronauts"
+    title = "2 Space facts I bet you didn't know!"
     testMode = False
     main(title, testMode)
