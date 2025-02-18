@@ -18,20 +18,24 @@ def script_generator(title, testMode, api_key_gemini):
 
         if testMode == False:
             prompt = f"""
-            Create a script for a YouTube Shorts video that lasts between 30 seconds and 1 minute. The script should be written in Hinglish (a mix of Hindi and English) and must consist only of the dialogue to be spoken in the video. It should be concise, engaging, and ready for direct use in a text-to-video application.
+            Create a script for a YouTube Shorts video that lasts between 30 seconds and 1 minute. The script should be written in Hinglish (a mix of Hindi and English) and must consist only of the dialogue to be spoken in the video. It should be concise, engaging, and ready for direct use in a text-to-video application. Also, each scene should not be more than 5 seconds long. And, each scene should be separated by a new line (\n\n) 
 
             Do not include any scene markers, scene descriptions, or camera directions. The script should only have the text that is spoken. Please follow the example below:
 
             Correct format (desired output) - Example of correct output:
             "Kya aapko pata h?
+
             Iceberg se collision toh hua, woh toh sabko pata h
+
             But real reason is steel"
 
             Incorrect format (what to avoid) - Example of Incorrect output:
             "Scene 1:
             Kya aapko pata h?
+
             Scene 2: 
             Iceberg se collision toh hua, woh toh sabko pata h
+
             Scene 3: 
             But real reason is steel"
 

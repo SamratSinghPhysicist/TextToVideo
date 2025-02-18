@@ -1,9 +1,6 @@
 import requests
 import os
 
-import os
-import requests
-
 def text_to_speech(script, testMode, api_key_elevenlabs, voice_id, output_file="output_speech.mp3"):
     is_speech_generated = False
     if not testMode:

@@ -8,6 +8,8 @@ import random
 from script_generator import generate_gemini
 
 
+
+
 def split_script_into_scenes(script):
     """
     Splits a script into scenes.
@@ -72,25 +74,16 @@ def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, se
 
             #Downloading and saving the image
             # with open(f'pollinations_images/{img_name}.jpg', 'wb') as file:
-            if response.content:
-                with open(f'{image_path}', 'wb') as file:
-                    file.write(response.content)
-                # Logging completion message
-                print('Download Completed')
-
-                return image_path
-            else:
-                print("Failed to download image for this scene")
-                print("Using test_assests/placeholder.jpg")
-
-                placeholder_image_path = "test_assests/placeholder.jpg"
-                return placeholder_image_path
-
+            with open(f'{image_path}', 'wb') as file:
+                file.write(response.content)
+            # Logging completion message
+            print('Download Completed')
 
         image_url = f"https://pollinations.ai/p/{prompt}?width={width}&height={height}&seed={seed}&model={model}"
-        path_of_downloaded_image = download_image(image_url, image_path)
+        download_image(image_url, image_path)
+        print("Image download successful")
 
-        return path_of_downloaded_image
+        return image_path
 
     else:
         print("Test Mode is ON. placeholder images will be used")
