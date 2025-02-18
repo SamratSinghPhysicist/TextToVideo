@@ -1,11 +1,14 @@
 import os
-# Set the environment variable before importing MoviePy
+# Prepend ffmpeg directory to PATH so that ffmpeg is found
+os.environ["PATH"] = r"C:\ffmpeg\bin;" + os.environ["PATH"]
+
+# Then set ImageMagick binary
 os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
 
 from moviepy.config import change_settings
 change_settings({"IMAGEMAGICK_BINARY": os.environ["IMAGEMAGICK_BINARY"]})
 
-# Now continue with your other imports
+# Now continue with other imports
 import subprocess
 import json
 from moviepy.editor import (
@@ -17,6 +20,7 @@ from moviepy.editor import (
 )
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+import whisper
 
 
 #Download ffmpeg (Note: Don't download source code instead go for windows)
@@ -26,43 +30,37 @@ FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"  # <-- Update this if necessary
 ##############################
 # 1. TRANSCRIBE THE AUDIO    #
 ##############################
+import whisper
 
-def transcribe_audio(audio_path, model_path="model"):
+def transcribe_audio_whisper(audio_path):
     """
-    Transcribes the given audio file using VOSK and returns a list of words.
+    Transcribes the given audio file using OpenAI's Whisper and returns a list of words.
     Each word is a dict with keys: "word", "start", "end".
-    The audio is converted on the fly to 16kHz mono.
-    """
-    if not os.path.exists(model_path):
-        print("VOSK model not found. Please download a model and place it in the 'model' folder.")
-        return []
-    try:
-        from vosk import Model, KaldiRecognizer
-    except ImportError:
-        print("Please install vosk (`pip install vosk`) to enable speech-to-text transcription.")
-        return []
     
-    model = Model(model_path)
-    # Run FFmpeg to convert audio to 16kHz mono PCM s16le.
-    process = subprocess.Popen(
-        [FFMPEG_BINARY, "-loglevel", "quiet", "-i", audio_path, "-ar", "16000", "-ac", "1", "-f", "s16le", "-"],
-        stdout=subprocess.PIPE
-    )
-    rec = KaldiRecognizer(model, 16000)
-    rec.SetWords(True)
+    The 'small' model is used here for a good balance between accuracy and speed.
+    If you need even lower resource usage, try 'base' instead.
+    """
+    # Load the model (choose "small" or "base")
+    model = whisper.load_model("small")  
+    # Transcribe audio; this returns a dict with segments
+    result = model.transcribe(audio_path)
+    
     transcript_words = []
-    while True:
-        data = process.stdout.read(4000)
-        if len(data) == 0:
-            break
-        if rec.AcceptWaveform(data):
-            res = json.loads(rec.Result())
-            if "result" in res:
-                transcript_words.extend(res["result"])
-    final_res = json.loads(rec.FinalResult())
-    if "result" in final_res:
-        transcript_words.extend(final_res["result"])
+    # Process each segment to estimate word-level timestamps.
+    for seg in result["segments"]:
+        words = seg["text"].split()
+        if not words:
+            continue
+        seg_duration = seg["end"] - seg["start"]
+        word_duration = seg_duration / len(words)
+        for i, word in enumerate(words):
+            transcript_words.append({
+                "word": word,
+                "start": seg["start"] + i * word_duration,
+                "end": seg["start"] + (i + 1) * word_duration,
+            })
     return transcript_words
+
 
 #####################################
 # 2. DYNAMIC SUBTITLE FRAME (TRANSCRIPT)  #
@@ -163,7 +161,7 @@ def generate_final_video(audio_path, images_mapping,
     """
     # Transcribe the audio.
     print("Transcribing audio... (this may take a few moments)")
-    transcript_words = transcribe_audio(audio_path, model_path="model")
+    transcript_words = transcribe_audio_whisper(audio_path)
     if not transcript_words:
         print("Transcription failed or returned no results.")
         return
@@ -233,11 +231,7 @@ def generate_final_video(audio_path, images_mapping,
 """
 if __name__ == "__main__":
     # Define your images mapping (ensure these paths are correct)
-    images_mapping = {
-        "scene1": "video_assets/A_group_of_I.jpg",
-        "scene2": "video_assets/A_lone_astro.jpg",
-        "scene3": "video_assets/A_vibrant__o.jpg",
-    }
+    images_mapping = {'scene1': 'video_assets/Close-up_por.jpg', 'scene2': 'video_assets/_A_serene_co.jpg', 'scene3': 'video_assets/A_surreal_pl.jpg', 'scene4': 'video_assets/A_surreal__e.jpg', 'scene5': 'video_assets/Vast__star-s.jpg', 'scene6': 'video_assets/A_serene_mou.jpg', 'scene7': 'video_assets/A_wide-eyed_.jpg', 'scene8': 'video_assets/A_concerned_.jpg', 'scene9': 'video_assets/A_young_woma.jpg', 'scene10': 'video_assets/A_retro-futu.jpg'}
     # Provide the voiceover audio path (MP3 file)
     audio_path = "video_assets/output_speech.mp3"
     # Generate the final video

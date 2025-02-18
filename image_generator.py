@@ -2,7 +2,6 @@ import requests
 import re
 from base64 import b64decode
 from pathlib import Path
-import asyncio
 import random
 
 from script_generator import generate_gemini
@@ -79,7 +78,7 @@ def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, se
         print("Path of placeholder.jpg: /test_assets/placeholder.jpg")
         return "test_assets/placeholder.jpg"
 
-async def main_image_function(script, testMode, api_key_gemini):
+def main_image_function(script, testMode, api_key_gemini):
     # Split the script into a list of scenes
     scenes_list = split_script_into_scenes(script)
     image_name_with_scene = {}
@@ -90,10 +89,6 @@ async def main_image_function(script, testMode, api_key_gemini):
                 prompt_text = image_generate_prompt_pollinations(scenes_list[i], api_key_gemini)
                 image_path = generate_image_pollinations_ai(prompt_text, testMode)
                 image_name_with_scene.update({f"scene{i+1}": image_path})
-
-                print("Waiting for 20 seconds to avoid errors in image generation ....")
-                await asyncio.sleep(20)  # Wait 20 seconds before generating next image
-                print("Wait over for next image, continuing ....")
 
             return image_name_with_scene
         except Exception as e:
