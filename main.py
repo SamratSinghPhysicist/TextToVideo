@@ -4,22 +4,11 @@ from voiceover_generator import text_to_speech
 from image_generator import main_image_function
 from video_generator import generate_final_video
 
-
 import os
 from dotenv import load_dotenv
 
 import asyncio
 
-"""
-# TO MAKE A CODE WAIT
-async def main():
-    print("Start")
-    await asyncio.sleep(5)  # Wait for 5 seconds
-    print("End")
-
-# Run the async function
-asyncio.run(main())
-"""
 
 #Loading API keys from .env file
 load_dotenv()
@@ -142,7 +131,7 @@ def main(title, testMode):
     print(images_mapping)
 
     #Generate Video
-    generate_final_video(script, images_mapping, audio_path, output_filename="final_video.mp4", transition_duration=1)
+    generate_final_video(audio_path, images_mapping, output_filename="final_video.mp4", transition_duration=0.5)
 
 
 

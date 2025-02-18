@@ -1,4 +1,11 @@
 import os
+# Set the environment variable before importing MoviePy
+os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
+
+from moviepy.config import change_settings
+change_settings({"IMAGEMAGICK_BINARY": os.environ["IMAGEMAGICK_BINARY"]})
+
+# Now continue with your other imports
 import subprocess
 import json
 from moviepy.editor import (
@@ -8,12 +15,9 @@ from moviepy.editor import (
     CompositeVideoClip,
     VideoClip
 )
-from moviepy.config import change_settings
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
-# Set the ImageMagick binary path (update if needed)
-change_settings({"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
 
 #Download ffmpeg (Note: Don't download source code instead go for windows)
 # Set FFmpeg binary path. If FFmpeg is in your system's PATH, you can leave it as "ffmpeg".
