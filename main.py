@@ -92,7 +92,7 @@ def speech_receiver(script, testMode):
 def images_receiver(script, testMode):
     try:
         for i in range (1, len(api_key)+1):
-            images_name_with_scene = asyncio.run(main_image_function(script, testMode, api_key[f'account_{i}'][0]))
+            images_name_with_scene = main_image_function(script, testMode, api_key[f'account_{i}'][0])
 
             if images_name_with_scene:
                 return images_name_with_scene
@@ -136,6 +136,6 @@ def main(title, testMode):
 
 
 if __name__ == '__main__':
-    title = "3 Space facts I bet you didn't know!"
+    title = "Frilled neck lizard 🦎 #trending #facts #sciencefacts #science #australia  #viral #lizard #shorts"
     testMode = False
     main(title, testMode)
