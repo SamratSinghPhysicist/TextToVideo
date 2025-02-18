@@ -1,7 +1,8 @@
-beautifulsoup4==4.13.3
 moviepy==1.0.3
+numpy==2.2.3
+Pillow==9.5.0
+Pillow==11.1.0
 protobuf==5.29.3
 python-dotenv==1.0.1
 Requests==2.32.3
-selenium==4.28.1
-webdriver_manager==4.0.2
+vosk==0.3.45
