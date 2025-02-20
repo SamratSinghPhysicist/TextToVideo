@@ -77,6 +77,8 @@ def main_topic_generator(YOUTUBE_API_KEY, channel_niche, GEMINI_API_KEY):
     generated_topic = generate_topic_ideas(base_data, GEMINI_API_KEY)
     print(f"Generated topic is: {generated_topic}")
 
+    return generated_topic
+
 
 """
 if __name__ == "__main__":

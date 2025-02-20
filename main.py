@@ -3,6 +3,7 @@ import schedule
 import time
 import pickle
 import random
+import shutil
 
 from dotenv import load_dotenv
 from script_generator import script_generator
@@ -30,19 +31,35 @@ GEMINI_API_KEY_3 = os.getenv("GEMINI_API_KEY_3")
 ELEVENLABS_API_KEY_3 = os.getenv("ELEVENLABS_API_KEY_3")
 VOICE_ID_3 = os.getenv("VOICE_ID_3")
 
-IMAGEPIG_API_KEY = os.getenv("IMAGEPIG_API_KEY")
-
 # API keys for account_4=samrat1212study@gmail.com
 GEMINI_API_KEY_4 = "NOT MADE YET"
 ELEVENLABS_API_KEY_4 = os.getenv("ELEVENLABS_API_KEY_4")
 VOICE_ID_4 = os.getenv("VOICE_ID_4")
+
+#API keys for account_5=z8q7uo@edny.net
+GEMINI_API_KEY_5= "NOT MADE YET"
+ELEVENLABS_API_KEY_5 = os.getenv("ELEVENLABS_API_KEY_5")
+VOICE_ID_5 = os.getenv("VOICE_ID_5")
+
+
+#API keys for account_6=g3tljg@edny.net
+GEMINI_API_KEY_6= "NOT MADE YET"
+ELEVENLABS_API_KEY_6 = os.getenv("ELEVENLABS_API_KEY_6")
+VOICE_ID_6 = os.getenv("VOICE_ID_6")
+
+
+IMAGEPIG_API_KEY = os.getenv("IMAGEPIG_API_KEY")
+
+
 
 # API Keys for different accounts
 api_key = {
     'account_1': [GEMINI_API_KEY_1, ELEVENLABS_API_KEY_1, VOICE_ID_1, IMAGEPIG_API_KEY],
     'account_2': [GEMINI_API_KEY_2, ELEVENLABS_API_KEY_2, VOICE_ID_2, IMAGEPIG_API_KEY],
     'account_3': [GEMINI_API_KEY_3, ELEVENLABS_API_KEY_3, VOICE_ID_3, IMAGEPIG_API_KEY],
-    'account_4': [GEMINI_API_KEY_4, ELEVENLABS_API_KEY_4, VOICE_ID_4, IMAGEPIG_API_KEY]
+    'account_4': [GEMINI_API_KEY_4, ELEVENLABS_API_KEY_4, VOICE_ID_4, IMAGEPIG_API_KEY],
+    'account_5': [GEMINI_API_KEY_5, ELEVENLABS_API_KEY_5, VOICE_ID_5, IMAGEPIG_API_KEY],
+    'account_6': [GEMINI_API_KEY_6, ELEVENLABS_API_KEY_6, VOICE_ID_6, IMAGEPIG_API_KEY],
 }
 
 # ---------------------------
@@ -199,6 +216,8 @@ def process_video():
     print("Starting video generation process...")
     channel_niches = ['space facts', 'science facts', 'technology facts', 'amazing facts', 'general facts', 'knowledge facts']
     title = main_topic_generator(YOUTUBE_API_KEY, channel_niche=random.choice(channel_niches), GEMINI_API_KEY=GEMINI_API_KEY_1)
+    print(f"Generated Title: {title}")  # Debug print to see what title is returned
+
     testMode = False
     main(title, testMode)
     
@@ -206,10 +225,12 @@ def process_video():
     print("Uploading video to YouTube...")
     response = upload_to_youtube("final_video.mp4", title)
     if response:
-        print("Video uploaded successfully! Deleting local video file.")
+        print("Video uploaded successfully!")
+        print("Response snippet:", response.get("snippet", {}))
+        print("Deleting the local video files")
         try:
             os.remove("final_video.mp4")
-            os.rmdir("video_assets")
+            shutil.rmtree("video_assets")
             print("Local video file and assets deleted.")
         except Exception as e:
             print("Failed to delete local video file:", e)
