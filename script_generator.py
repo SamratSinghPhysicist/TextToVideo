@@ -53,4 +53,4 @@ def script_generator(title, testMode, api_key_gemini):
         return [f"Failed to generate script. Error \n: {e}", is_script_generated]
 
 
-# script_generator("2 Space facts I bet you didn't know!", False, "AIzaSyA0RYI9KRrNLi6KaX4g49UJD4G5YBEb6II")
+# print(script_generator("2 Space facts I bet you didn't know!", False, "AIzaSyA0RYI9KRrNLi6KaX4g49UJD4G5YBEb6II"))
