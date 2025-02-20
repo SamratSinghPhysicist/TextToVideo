@@ -6,3 +6,4 @@ protobuf==5.29.3
 python-dotenv==1.0.1
 Requests==2.32.3
 schedule==1.2.2
+google==3.0.0
