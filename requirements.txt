@@ -2,7 +2,7 @@ google_api_python_client==2.160.0
 google_auth_oauthlib==1.2.1
 moviepy==1.0.3
 numpy==2.2.3
-protobuf==5.29.3
+protobuf>=3.19.5,<5.0.0
 python-dotenv==1.0.1
 Requests==2.32.3
 schedule==1.2.2
