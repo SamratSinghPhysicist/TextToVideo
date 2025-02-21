@@ -308,7 +308,7 @@ def index():
 # ---------------------------
 if __name__ == "__main__":
     # Schedule the process to run twice daily (adjust times as needed)
-    schedule.every().day.at("00:45").do(process_video)
+    schedule.every().day.at("11:40").do(process_video)
     schedule.every().day.at("18:00").do(process_video)
     
     print("Scheduler is running. Waiting for next scheduled time...")
