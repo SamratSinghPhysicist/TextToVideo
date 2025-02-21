@@ -15,12 +15,13 @@ COPY . /workspace
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set environment variables for FFmpeg and ImageMagick
+# Set environment variables for FFmpeg, ImageMagick, and unbuffered Python output
 ENV FFMPEG_BINARY="ffmpeg"
 ENV IMAGEMAGICK_BINARY="/usr/bin/convert"
+ENV PYTHONUNBUFFERED=1
 
 # Expose the port that the Flask server will listen on (default: 5000)
 EXPOSE 5000
 
-# Run main.py (which starts the Flask server and the scheduler in a background thread)
-CMD ["python", "main.py"]
+# Run main.py in unbuffered mode
+CMD ["python", "-u", "main.py"]
