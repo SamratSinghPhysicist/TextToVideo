@@ -21,7 +21,6 @@ from moviepy.editor import (
     concatenate_videoclips,
     CompositeVideoClip
 )
-import numpy as np
 
 # Set FFmpeg binary path (if needed)
 FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"  # Adjust if necessary
