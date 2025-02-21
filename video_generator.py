@@ -8,9 +8,10 @@ if sys.platform.startswith("win"):
     os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
     FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"
 else:
-    # For Linux or macOS, assume ffmpeg and imagemagick are installed and in PATH.
+    # Linux/macOS: assume ffmpeg and imagemagick are installed and in PATH.
     FFMPEG_BINARY = "ffmpeg"
-    os.environ["IMAGEMAGICK_BINARY"] = "magick"  # or simply leave it as is if moviepy finds it
+    # On many Linux systems, ImageMagick version 6 is installed, whose binary is "convert"
+    os.environ["IMAGEMAGICK_BINARY"] = "convert"
 
 from moviepy.config import change_settings
 change_settings({"IMAGEMAGICK_BINARY": os.environ["IMAGEMAGICK_BINARY"]})
@@ -22,8 +23,6 @@ from moviepy.editor import (
     CompositeVideoClip
 )
 
-# Set FFmpeg binary path (if needed)
-FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"  # Adjust if necessary
 
 #####################################
 # FINAL VIDEO GENERATION (NO SUBS)  #
