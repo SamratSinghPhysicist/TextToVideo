@@ -1,13 +1,20 @@
 import os
-# Prepend ffmpeg directory to PATH so that ffmpeg is found
-os.environ["PATH"] = r"C:\ffmpeg\bin;" + os.environ["PATH"]
-# Set ImageMagick binary (include the executable name)
-os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
+import sys
+
+# Cross-platform environment setup for FFmpeg and ImageMagick
+if sys.platform.startswith("win"):
+    # Windows-specific settings
+    os.environ["PATH"] = r"C:\ffmpeg\bin;" + os.environ["PATH"]
+    os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
+    FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"
+else:
+    # For Linux or macOS, assume ffmpeg and imagemagick are installed and in PATH.
+    FFMPEG_BINARY = "ffmpeg"
+    os.environ["IMAGEMAGICK_BINARY"] = "magick"  # or simply leave it as is if moviepy finds it
 
 from moviepy.config import change_settings
 change_settings({"IMAGEMAGICK_BINARY": os.environ["IMAGEMAGICK_BINARY"]})
 
-# Now import other modules
 from moviepy.editor import (
     ImageClip,
     AudioFileClip,
