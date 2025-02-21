@@ -51,37 +51,46 @@ VOICE_ID_6 = os.getenv("VOICE_ID_6")
 """
 
 # API keys for account_1=samratddypppis@gmail.com
-GEMINI_API_KEY_1 = os.getenv("GEMINI_API_KEY_1")
-ELEVENLABS_API_KEY_1 = os.getenv("ELEVENLABS_API_KEY_1")
-VOICE_ID_1 = os.getenv("VOICE_ID_1")
+
+GEMINI_API_KEY_1 = "AIzaSyBT9nNewIYud_hrVlBI_9lqqqa58REqw2Y"
+
+ELEVENLABS_API_KEY_1 = "sk_6718bab9e714d9eee4cbd6bce21f3d5140ed2faed553a96d"
+VOICE_ID_1 = "pNInz6obpgDQGcFmaJgB"
 
 # API keys for account_2=samrat1212study2@gmail.com
-GEMINI_API_KEY_2 = os.getenv("GEMINI_API_KEY_2")
-ELEVENLABS_API_KEY_2 = os.getenv("ELEVENLABS_API_KEY_2")
-VOICE_ID_2 = os.getenv("VOICE_ID_2")
+GEMINI_API_KEY_2 = "AIzaSyA0RYI9KRrNLi6KaX4g49UJD4G5YBEb6II"
+
+ELEVENLABS_API_KEY_2 = "sk_4f4adae16d2763397bd06db5b3441789a3c41556e4ec7ee7"
+VOICE_ID_2 = "pNInz6obpgDQGcFmaJgB"
+
 
 # API keys for account_3=sam1212factz@gmail.com
-GEMINI_API_KEY_3 = os.getenv("GEMINI_API_KEY_3")
-ELEVENLABS_API_KEY_3 = os.getenv("ELEVENLABS_API_KEY_3")
-VOICE_ID_3 = os.getenv("VOICE_ID_3")
+
+GEMINI_API_KEY_3 = "AIzaSyDp2PpmrRg821UXq-5NznKDCfqrFFuqa9A"
+
+ELEVENLABS_API_KEY_3 = "sk_dd2557c5cd543fe0c60256807a3d7cddbb1991e10e433467"
+VOICE_ID_3 = "pNInz6obpgDQGcFmaJgB"
 
 YOUTUBE_API_KEY = "AIzaSyAgLCRVl5QHj51uNaSN-0ruU1UQVgHZpbc"
 
 # API keys for account_4=samrat1212study@gmail.com
 GEMINI_API_KEY_4 = "NOT MADE YET"
-ELEVENLABS_API_KEY_4 = os.getenv("ELEVENLABS_API_KEY_4")
-VOICE_ID_4 = os.getenv("VOICE_ID_4")
+
+ELEVENLABS_API_KEY_4 = "sk_89bd9f9a40e0803b424ecbf736ae7c07f870b0231f8ff63a"
+VOICE_ID_4 = "pNInz6obpgDQGcFmaJgB"
+
 
 #API keys for account_5=z8q7uo@edny.net
 GEMINI_API_KEY_5= "NOT MADE YET"
-ELEVENLABS_API_KEY_5 = os.getenv("ELEVENLABS_API_KEY_5")
-VOICE_ID_5 = os.getenv("VOICE_ID_5")
+ELEVENLABS_API_KEY_5 = "sk_012c730771d0a09bbcf52a7fde6b4c86166af98eb1100797"
+VOICE_ID_5 = "pNInz6obpgDQGcFmaJgB"
 
 
 #API keys for account_6=g3tljg@edny.net
 GEMINI_API_KEY_6= "NOT MADE YET"
-ELEVENLABS_API_KEY_6 = os.getenv("ELEVENLABS_API_KEY_6")
-VOICE_ID_6 = os.getenv("VOICE_ID_6")
+
+ELEVENLABS_API_KEY_6 = "sk_001031063608d5efd044e051a0707757fe9f3b75c383ad23"
+VOICE_ID_6 = "pNInz6obpgDQGcFmaJgB"
 
 
 
@@ -276,7 +285,7 @@ def process_video():
 # Schedule the process to run twice daily
 # ---------------------------
 # Schedule first upload at 2:00 PM and second at 6:00 PM
-schedule.every().day.at("14:00").do(process_video)
+schedule.every().day.at("23:21").do(process_video)
 schedule.every().day.at("18:00").do(process_video)
 
 print("Scheduler is running. Waiting for next scheduled time...")

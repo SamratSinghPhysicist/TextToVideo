@@ -27,7 +27,7 @@ def image_generate_prompt_pollinations(scene, api_key_gemini):
 
     return image_generate_prompt
 
-def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, seed=random.randint(1,100), model='flux'):
+def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, seed=random.randint(1,100000), model='flux'):
     if testMode == False:
         # Define the subfolder and filename
         subfolder = Path("video_assets")
@@ -50,7 +50,7 @@ def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, se
             except Exception as e:
                 print("Error during requests.get:", e)
                 print("Using test_assests/placeholder.jpg")
-                return "test_assests/placeholder.jpg"
+                return "test_assets/placeholder.jpg"
 
             # Check if the request was successful
             if response.status_code == 200 and response.content:
@@ -61,13 +61,13 @@ def generate_image_pollinations_ai(prompt, testMode, width=1080, height=1920, se
                 file_size = Path(image_path).stat().st_size
                 if file_size < 500:  # adjust this threshold if needed
                     print("Downloaded image is too small (likely invalid). Using placeholder image.")
-                    return "test_assests/placeholder.jpg"
+                    return "test_assets/placeholder.jpg"
                 else:
                     print("Download Completed")
                     return image_path
             else:
                 print("Failed to download image for this scene. Using test_assests/placeholder.jpg")
-                return "test_assests/placeholder.jpg"
+                return "test_assets/placeholder.jpg"
 
         image_url = f"https://pollinations.ai/p/{prompt}?width={width}&height={height}&seed={seed}&model={model}"
         path_of_downloaded_image = download_image(image_url, image_path)
