@@ -1,7 +1,9 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-# Install system dependencies for ffmpeg, imagemagick, and Pillow
+# Install build tools and dependencies for ffmpeg, imagemagick, and Pillow
 RUN apt-get update && apt-get install -y \
+    gcc \
+    build-essential \
     ffmpeg \
     imagemagick \
     zlib1g-dev \
