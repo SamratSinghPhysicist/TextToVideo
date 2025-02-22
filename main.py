@@ -4,7 +4,6 @@ import time
 import pickle
 import random
 import shutil
-import threading
 
 from dotenv import load_dotenv
 from script_generator import script_generator
@@ -282,41 +281,14 @@ def process_video():
     else:
         print("Video upload failed. Local video file retained.")
 
-
-
-
 # ---------------------------
-# Scheduler Function (runs scheduled tasks)
+# Schedule the process to run twice daily
 # ---------------------------
-def run_scheduler():
-    while True:
-        schedule.run_pending()
-        time.sleep(30)
+# Schedule first upload at 2:00 PM and second at 6:00 PM
+schedule.every().day.at("18:00").do(process_video)
+schedule.every().day.at("19:00").do(process_video)
 
-# ---------------------------
-# Flask Server Setup for Web Service (to satisfy hosting platforms like Render)
-# ---------------------------
-from flask import Flask
-app = Flask(__name__)
-
-@app.route("/")
-def index():
-    return "Scheduler is running. Video generation process is scheduled."
-
-# ---------------------------
-# MAIN EXECUTION
-# ---------------------------
-if __name__ == "__main__":
-    # Schedule the process to run twice daily (adjust times as needed)
-    schedule.every().day.at("11:40").do(process_video)
-    schedule.every().day.at("18:00").do(process_video)
-    
-    print("Scheduler is running. Waiting for next scheduled time...")
-
-    # Start the scheduler in a background thread.
-    scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
-    scheduler_thread.start()
-    
-    # Start the Flask web server (bind to port from environment, default 5000)
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+print("Scheduler is running. Waiting for next scheduled time...")
+while True:
+    schedule.run_pending()
+    time.sleep(30)  # Check every 30 seconds
