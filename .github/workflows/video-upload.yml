@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg libjpeg-dev zlib1g-dev
           pip install -r requirements.txt
 
       - name: Run video generator
@@ -47,7 +47,7 @@ jobs:
         run: python main.py
 
       - name: Upload video artifact
-        uses: actions/upload-artifact@v4  # Updated from v3 to v4
+        uses: actions/upload-artifact@v4
         with:
           name: final-video
           path: final_video.mp4
