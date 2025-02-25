@@ -288,7 +288,7 @@ def process_video():
 # Schedule the process to run twice daily
 # ---------------------------
 # Schedule first upload at 2:00 PM and second at 6:00 PM
-schedule.every().day.at("00:09").do(process_video)
+schedule.every().day.at("00:20").do(process_video)
 schedule.every().day.at("14:00").do(process_video)
 schedule.every().day.at("19:30").do(process_video)
 
