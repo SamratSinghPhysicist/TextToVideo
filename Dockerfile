@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN ffmpeg -version  # Test during build
+
 WORKDIR /workspace
 
 COPY . /workspace

@@ -200,11 +200,11 @@ def upload_to_youtube(video_file, title, description="Don't forget to like and s
         SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
         credentials = None
 
-        # Check if token.pickle exists for stored credentials.
         if os.path.exists("token.pickle"):
             with open("token.pickle", "rb") as token:
                 credentials = pickle.load(token)
-        
+            print("Token loaded. Valid:", credentials.valid, "Expired:", credentials.expired)
+
         # If credentials are not valid, initiate the OAuth flow.
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
@@ -260,14 +260,17 @@ def process_video():
     print("Starting video generation process...")
     channel_niches = ['space facts', 'science facts', 'technology facts', 'amazing facts', 'general facts', 'knowledge facts']
     title = main_topic_generator(YOUTUBE_API_KEY, channel_niche=random.choice(channel_niches), GEMINI_API_KEY=GEMINI_API_KEY_1)
-    print(f"Generated Title: {title}")  # Debug print to see what title is returned
+    print(f"Generated Title: {title}")
 
-    testMode = False
+    testMode = True
     main(title, testMode)
-    
-    # Upload the generated video.
+
+    video_file = "final_video.mp4"
+    if not os.path.exists(video_file):
+        print(f"Error: Video file {video_file} not found. Upload skipped.")
+        return
     print("Uploading video to YouTube...")
-    response = upload_to_youtube("final_video.mp4", title)
+    response = upload_to_youtube(video_file, title)
     if response:
         print("Video uploaded successfully!")
         print("Response snippet:", response.get("snippet", {}))
@@ -285,8 +288,8 @@ def process_video():
 # Schedule the process to run twice daily
 # ---------------------------
 # Schedule first upload at 2:00 PM and second at 6:00 PM
-schedule.every().day.at("18:40").do(process_video)
-schedule.every().day.at("18:55").do(process_video)
+schedule.every().day.at("00:09").do(process_video)
+schedule.every().day.at("14:00").do(process_video)
 schedule.every().day.at("19:30").do(process_video)
 
 print("Scheduler is running. Waiting for next scheduled time...")
