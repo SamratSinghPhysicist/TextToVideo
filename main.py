@@ -284,15 +284,5 @@ def process_video():
     else:
         print("Video upload failed. Local video file retained.")
 
-# ---------------------------
-# Schedule the process to run twice daily
-# ---------------------------
-# Schedule first upload at 2:00 PM and second at 6:00 PM
-schedule.every().day.at("00:20").do(process_video)
-schedule.every().day.at("14:00").do(process_video)
-schedule.every().day.at("19:30").do(process_video)
-
-print("Scheduler is running. Waiting for next scheduled time...")
-while True:
-    schedule.run_pending()
-    time.sleep(30)  # Check every 30 seconds
+if __name__ == "__main__":
+    process_video()
