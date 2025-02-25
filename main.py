@@ -262,7 +262,7 @@ def process_video():
     title = main_topic_generator(YOUTUBE_API_KEY, channel_niche=random.choice(channel_niches), GEMINI_API_KEY=GEMINI_API_KEY_1)
     print(f"Generated Title: {title}")
 
-    testMode = True
+    testMode = False   #Set testMode=False to actually use APIs (For production)
     main(title, testMode)
 
     video_file = "final_video.mp4"
