@@ -1,7 +1,8 @@
 name: Generate and Upload Video
 on:
   schedule:
-    - cron: '0 10 * * *'  # 10:00 AM UTC = 3:30 PM IST
+    - cron: '25 8 * * *'  # 8:25 AM UTC = 1:45PM IST ~ 2:00pm IST
+    - cron: '12 9 * * *' 
   workflow_dispatch:  # Allows manual trigger for initial testing
 
 jobs:
