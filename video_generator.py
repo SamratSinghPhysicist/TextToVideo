@@ -98,6 +98,13 @@ def generate_final_video(audio_path, images_mapping, output_filename="final_vide
                 lambda t, d=scene_duration: (-int(max_offset_x * (t / d)), 0)
             )
 
+            # Add animated text overlay (e.g., scene number or keyword)
+            text = TextClip("SUBSCRIBE", fontsize=70, color='white', font='Arial-Bold',
+                           stroke_color='black', stroke_width=2)\
+                           .set_position(('center', 'top'))\
+                           .set_duration(scene_duration)\
+                           .fx(vfx.fadein, 0.5).fx(vfx.fadeout, 0.5)
+
             # Combine image and text into a composite clip
             final_scene = CompositeVideoClip([panned_clip, text], size=(final_width, final_height))\
                           .set_duration(scene_duration)
