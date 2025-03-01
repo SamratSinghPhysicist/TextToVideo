@@ -1,54 +1,14 @@
 import os
-import schedule
-import time
 import pickle
 import random
 import shutil
-
-from dotenv import load_dotenv
 from script_generator import script_generator
 from voiceover_generator import text_to_speech
 from image_generator import main_image_function
 from video_generator import generate_final_video
 from topic_fetcher import main_topic_generator
 
-"""
-# Load API keys from .env file
-load_dotenv()
 
-# API keys for account_1=samratddypppis@gmail.com
-GEMINI_API_KEY_1 = os.getenv("GEMINI_API_KEY_1")
-ELEVENLABS_API_KEY_1 = os.getenv("ELEVENLABS_API_KEY_1")
-VOICE_ID_1 = os.getenv("VOICE_ID_1")
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-
-# API keys for account_2=samrat1212study2@gmail.com
-GEMINI_API_KEY_2 = os.getenv("GEMINI_API_KEY_2")
-ELEVENLABS_API_KEY_2 = os.getenv("ELEVENLABS_API_KEY_2")
-VOICE_ID_2 = os.getenv("VOICE_ID_2")
-
-# API keys for account_3=sam1212factz@gmail.com
-GEMINI_API_KEY_3 = os.getenv("GEMINI_API_KEY_3")
-ELEVENLABS_API_KEY_3 = os.getenv("ELEVENLABS_API_KEY_3")
-VOICE_ID_3 = os.getenv("VOICE_ID_3")
-
-# API keys for account_4=samrat1212study@gmail.com
-GEMINI_API_KEY_4 = "NOT MADE YET"
-ELEVENLABS_API_KEY_4 = os.getenv("ELEVENLABS_API_KEY_4")
-VOICE_ID_4 = os.getenv("VOICE_ID_4")
-
-#API keys for account_5=z8q7uo@edny.net
-GEMINI_API_KEY_5= "NOT MADE YET"
-ELEVENLABS_API_KEY_5 = os.getenv("ELEVENLABS_API_KEY_5")
-VOICE_ID_5 = os.getenv("VOICE_ID_5")
-
-
-#API keys for account_6=g3tljg@edny.net
-GEMINI_API_KEY_6= "NOT MADE YET"
-ELEVENLABS_API_KEY_6 = os.getenv("ELEVENLABS_API_KEY_6")
-VOICE_ID_6 = os.getenv("VOICE_ID_6")
-
-"""
 
 # API keys for account_1=samratddypppis@gmail.com
 
