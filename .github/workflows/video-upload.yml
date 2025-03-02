@@ -21,7 +21,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg libjpeg-dev zlib1g-dev imagemagick
+          # Relax ImageMagick security policy to allow @* operations
+          sudo sed -i 's/<policy domain="path" rights="none" pattern="@\*"/<policy domain="path" rights="read|write" pattern="@\*"/' /etc/ImageMagick-6/policy.xml
           pip install -r requirements.txt
+
+      - name: Verify ImageMagick and FFmpeg
+        run: |
+          convert --version
+          ffmpeg -version
 
       - name: Run video generator
         env:
@@ -47,6 +54,7 @@ jobs:
         run: python main.py
 
       - name: Upload video artifact
+        if: success()  # Only upload if the previous step succeeds
         uses: actions/upload-artifact@v4
         with:
           name: final-video

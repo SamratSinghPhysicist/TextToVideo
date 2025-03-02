@@ -9,9 +9,10 @@ if sys.platform.startswith("win"):
     os.environ["IMAGEMAGICK_BINARY"] = r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"
     FFMPEG_BINARY = r"C:\ffmpeg\bin\ffmpeg.exe"
 else:
+    # For Linux (GitHub Actions),
     # For Linux/macOS, assume ffmpeg is installed in PATH.
     FFMPEG_BINARY = "ffmpeg"
-    # On many Linux systems (like Railway's container), ImageMagick is installed with 'convert' at /usr/bin/convert
+    # On many Linux systems (like GitHub Actions, Railway.com, render.com), ImageMagick is installed with 'convert' at /usr/bin/convert
     os.environ["IMAGEMAGICK_BINARY"] = "/usr/bin/convert"
 
 print("ImageMagick path MoviePy will use:", os.environ["IMAGEMAGICK_BINARY"])
