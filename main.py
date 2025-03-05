@@ -185,7 +185,7 @@ def upload_to_youtube(video_file, title, description="Don't forget to like and s
                 "title": title,
                 "description": description,
                 "tags": tags or [],
-                "categoryId": "22"  # For example, "22" is often used for People & Blogs.
+                "categoryId": "28"  # For example, "28" is often used for Science & Technology.
             },
             "status": {
                 "privacyStatus": privacyStatus
