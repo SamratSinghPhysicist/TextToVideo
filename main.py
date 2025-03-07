@@ -220,7 +220,7 @@ def upload_to_youtube(video_file, title, description="Don't forget to like and s
 def process_video():
     print("Starting video generation process...")
     channel_niches = ['space facts', 'science facts', 'technology facts', 'amazing facts', 'general facts', 'knowledge facts']
-    title = main_topic_generator(YOUTUBE_API_KEY, channel_niche=random.choice(channel_niches), GEMINI_API_KEY=GEMINI_API_KEY_1)
+    title = main_topic_generator(GEMINI_API_KEY=GEMINI_API_KEY_1)
     print(f"Generated Title: {title}")
 
     testMode = False   #Set testMode=False to actually use APIs (For production)
