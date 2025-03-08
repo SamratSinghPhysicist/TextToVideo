@@ -1,25 +1,17 @@
 import os
-import google.oauth2.credentials
-import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-import json
 import re
 from collections import Counter
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-import requests
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
 import pickle
-import time
 from google import genai
 
 GEMINI_API_KEY = "AIzaSyA0RYI9KRrNLi6KaX4g49UJD4G5YBEb6II"
