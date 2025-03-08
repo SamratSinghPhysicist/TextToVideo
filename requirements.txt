@@ -8,3 +8,12 @@ schedule==1.2.2
 google-genai==1.0.0
 google-api-core==2.11.0
 Pillow==6.2.2
+google-auth-httplib2==0.1.0
+pandas==2.0.3
+numpy==1.24.3
+colorama==0.4.6
+termcolor==2.3.0
+pretty-tables==3.1.0
+pytrends==4.9.2
+tqdm==4.65.0
+nltk==3.9.1
