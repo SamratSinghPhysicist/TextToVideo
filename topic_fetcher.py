@@ -22,8 +22,7 @@ class YouTubeShortsTopicGenerator:
         self.api_service_name = "youtube"
         self.api_version = "v3"
         self.client_secrets_file = client_secrets_file or "client_secrets.json"
-        self.scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
-        self.scopes = ["https://www.googleapis.com/auth/youtube.upload"]
+        self.scopes = ["https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.upload"]
         self.youtube = None
         self.channel_id = None
         self.channel_data = {}
